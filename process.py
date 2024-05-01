@@ -27,14 +27,16 @@ df = merge([f(d) for d in data])
 df["date"] = pd.to_datetime(df["date"], unit='ms').dt.strftime('%Y%m%d%H%M%S')
 
 df_gt = pd.read_csv('data/google-trends.csv')
-df_gt.rename(columns={'Month': 'date'}, inplace=True)
-df_gt.rename(columns={'bitcoin': 'google-trends'}, inplace=True)
+df_gt.rename(columns={'Month': 'date', 'bitcoin': 'google-trends'}, inplace=True)
 df_gt['date'] = pd.to_datetime(df_gt['date']).dt.strftime('%Y%m%d%H%M%S')
-
-
 df = pd.merge(df, df_gt, how="outer")
-df = df.sort_values(by="date")
 
-# print(df2)
+df_fng = pd.read_csv('data/fng.csv')
+df_fng.drop(columns=['fng_classification'], inplace=True)
+df_fng.rename(columns={'fng_value': 'fng'}, inplace=True)
+df_fng['date'] = pd.to_datetime(df_fng['date'], format='%d-%m-%Y').dt.strftime('%Y%m%d%H%M%S')
+df = pd.merge(df, df_fng, how="outer")
+
+df = df.sort_values(by="date")
 print(df)
 df.to_csv('data/dataset.csv', index=False)
