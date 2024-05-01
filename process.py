@@ -1,13 +1,15 @@
 import json
 import pandas as pd
 
-
 if __name__ == "__main__":
   with open('data/mvrv.json', 'r') as file:
     json = json.load(file)
-    df = pd.DataFrame(json["mvrv"])
-    df.columns = ["date", "mvrv"]
-    df["date"] = df["date"].apply(lambda x: pd.to_datetime(x, unit='ms').strftime('%Y-%m-%d'))
-
-
+    df_mvrv = pd.DataFrame(json["mvrv"])
+    df_market_price = pd.DataFrame(json["market-price"])
+    df_mvrv.columns = ["date", "mvrv"]
+    df_market_price.columns = ["date", "market-price"]
+    df = pd.merge( df_market_price,df_mvrv, on="date", how="outer")
+    df = df.sort_values(by="date")
+    df["date"] = pd.to_datetime(df["date"], unit='ms').dt.strftime('%Y-%m-%d')
+    print(df)
     df.to_csv('data/dataset.csv', index=False)
