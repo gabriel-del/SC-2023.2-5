@@ -24,7 +24,17 @@ data = [
 ]
 
 df = merge([f(d) for d in data])
-df = df.sort_values(by="date")
 df["date"] = pd.to_datetime(df["date"], unit='ms').dt.strftime('%Y%m%d%H%M%S')
+
+df_gt = pd.read_csv('data/google-trends.csv')
+df_gt.rename(columns={'Month': 'date'}, inplace=True)
+df_gt.rename(columns={'bitcoin': 'google-trends'}, inplace=True)
+df_gt['date'] = pd.to_datetime(df_gt['date']).dt.strftime('%Y%m%d%H%M%S')
+
+
+df = pd.merge(df, df_gt, how="outer")
+df = df.sort_values(by="date")
+
+# print(df2)
 print(df)
 df.to_csv('data/dataset.csv', index=False)
