@@ -19,7 +19,8 @@ def merge(dataframes):
 data = [
     ('mvrv'),
     ('200w', '200w-moving-avg-heatmap'),
-    ('market-cap')
+    ('market-cap'),
+    ('fees-usd-per-transaction'),
 ]
 
 df = merge([f(d) for d in data])
