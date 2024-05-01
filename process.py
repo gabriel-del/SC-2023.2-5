@@ -1,5 +1,7 @@
 import json
 import pandas as pd
+from functools import reduce
+
 
 def f(name, index=None):
   if index is None: index = name
@@ -12,10 +14,21 @@ def f(name, index=None):
     return pd.merge( df_1,df_2, on="date", how="outer")
 
 
-df = pd.merge(
-  f('mvrv'),
-  f('200w', '200w-moving-avg-heatmap'),
-  how="outer")
+# df = pd.merge(
+#   f('mvrv'),
+#   f('200w', '200w-moving-avg-heatmap'),
+#   f('market-cap'),
+#   how="outer")
+
+dataframes = [
+    ('mvrv', None),
+    ('200w', '200w-moving-avg-heatmap'),
+    ('market-cap', None)
+]
+
+df = reduce(lambda left, right: pd.merge(left, right, how="outer"),
+                  [f(name, index) for name, index in dataframes])
+
 df = df.sort_values(by="date")
 df["date"] = pd.to_datetime(df["date"], unit='ms').dt.strftime('%Y%m%d%H%M%S')
 print(df)
