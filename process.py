@@ -15,20 +15,15 @@ def merge(dataframes):
     if len(dataframes) == 1:
         return dataframes[0]
     else:
-        first_df = dataframes[0]
-        remaining_dfs = dataframes[1:]
-        merged_df = first_df.merge(merge(remaining_dfs), how="outer")
-        return merged_df
+        return pd.merge(dataframes[0], merge(dataframes[1:]), how="outer")
 
 dataframes = [
     ('mvrv', None),
     ('200w', '200w-moving-avg-heatmap'),
     ('market-cap', None)
 ]
-dfs = [f(name, index) for name, index in dataframes]
 
-# Merge the DataFrames using recursion
-df = merge(dfs)
+df = merge([f(name, index) for name, index in dataframes])
 
 df = df.sort_values(by="date")
 df["date"] = pd.to_datetime(df["date"], unit='ms').dt.strftime('%Y%m%d%H%M%S')
