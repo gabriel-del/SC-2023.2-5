@@ -1,8 +1,9 @@
 import json
 import pandas as pd
 
-def f(name, index=None):
-  if index is None: index = name
+def f(input):
+  if isinstance(input, str): name = index = input
+  else: name, index = input
   with open(f'data/{name}.json', 'r') as file:
     json_file = json.load(file)
     df_1 = pd.DataFrame(json_file["market-price"])
@@ -12,19 +13,16 @@ def f(name, index=None):
     return pd.merge( df_1,df_2, on="date", how="outer")
 
 def merge(dataframes):
-    if len(dataframes) == 1:
-        return dataframes[0]
-    else:
-        return pd.merge(dataframes[0], merge(dataframes[1:]), how="outer")
+    if len(dataframes) == 1: return dataframes[0]
+    else: return pd.merge(dataframes[0], merge(dataframes[1:]), how="outer")
 
-dataframes = [
-    ('mvrv', None),
+data = [
+    ('mvrv'),
     ('200w', '200w-moving-avg-heatmap'),
-    ('market-cap', None)
+    ('market-cap')
 ]
 
-df = merge([f(name, index) for name, index in dataframes])
-
+df = merge([f(d) for d in data])
 df = df.sort_values(by="date")
 df["date"] = pd.to_datetime(df["date"], unit='ms').dt.strftime('%Y%m%d%H%M%S')
 print(df)
