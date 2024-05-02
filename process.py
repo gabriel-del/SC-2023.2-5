@@ -10,15 +10,22 @@ def f(input):
     df_2 = pd.DataFrame(json_file[index])
     df_1.columns = ["date", "market-price"]
     df_2.columns = ["date", name]
+
     return pd.merge( df_1,df_2, on="date", how="outer")
 
 def merge(dataframes):
     if len(dataframes) == 1: return dataframes[0]
     else: return pd.merge(dataframes[0], merge(dataframes[1:]), how="outer")
 
-data = [('mvrv'), ('200w', '200w-moving-avg-heatmap'), ('market-cap'), ('fees-usd-per-transaction')]
+data = [
+  ('mvrv'),
+# ('200w', '200w-moving-avg-heatmap'),
+('market-cap'),
+ ('fees-usd-per-transaction')
+ ]
 
 df = merge([f(d) for d in data])
+
 df["date"] = pd.to_datetime(df["date"], unit='ms')
 
 df_gt = pd.read_csv('data/google-trends.csv')
@@ -32,11 +39,11 @@ df_fng.rename(columns={'fng_value': 'fng'}, inplace=True)
 df_fng['date'] = pd.to_datetime(df_fng['date'], format='%d-%m-%Y')
 df = pd.merge(df, df_fng, how="outer")
 
-df = df.sort_values(by="date")
 df = df[df['date'] >= '2010-08-24']
 df.set_index("date", inplace=True)
 df = df.resample('4D').mean()
 df.reset_index(inplace=True)
 
+df = df.sort_values(by="date")
 print(df)
 df.to_csv('data/dataset.csv', index=False)

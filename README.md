@@ -8,6 +8,7 @@ Trabalho de conclusão do 5 módulo (Machine Learning 1) do Santander Coders 202
 * Kenzo
 
 ## To Do
+* ver pq 200w ta igual market-price
 * Agrupar os dados por dia (checar se viável)
 * plotar gráficos
 * Adicionar pi_cycle, fng2, dominance, dominance2, aos dados
