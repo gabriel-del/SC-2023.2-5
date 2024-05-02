@@ -19,28 +19,23 @@ def merge(dataframes):
 data = [('mvrv'), ('200w', '200w-moving-avg-heatmap'), ('market-cap'), ('fees-usd-per-transaction')]
 
 df = merge([f(d) for d in data])
-df["date"] = pd.to_datetime(df["date"], unit='ms').dt.strftime('%Y%m%d%H%M%S')
+df["date"] = pd.to_datetime(df["date"], unit='ms')
 
 df_gt = pd.read_csv('data/google-trends.csv')
 df_gt.rename(columns={'Month': 'date', 'bitcoin': 'google-trends'}, inplace=True)
-df_gt['date'] = pd.to_datetime(df_gt['date']).dt.strftime('%Y%m%d%H%M%S')
+df_gt['date'] = pd.to_datetime(df_gt['date'])
 df = pd.merge(df, df_gt, how="outer")
 
 df_fng = pd.read_csv('data/fng.csv')
 df_fng.drop(columns=['fng_classification'], inplace=True)
 df_fng.rename(columns={'fng_value': 'fng'}, inplace=True)
-df_fng['date'] = pd.to_datetime(df_fng['date'], format='%d-%m-%Y').dt.strftime('%Y%m%d%H%M%S')
+df_fng['date'] = pd.to_datetime(df_fng['date'], format='%d-%m-%Y')
 df = pd.merge(df, df_fng, how="outer")
 
 df = df.sort_values(by="date")
-df["date"] = pd.to_datetime(df["date"], format='%Y%m%d%H%M%S')
 df.set_index("date", inplace=True)
 df = df.resample('4D').mean()
 df.reset_index(inplace=True)
 
-
-
-
-# print(df_resampled)
 print(df)
 df.to_csv('data/dataset.csv', index=False)
