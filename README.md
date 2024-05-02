@@ -23,8 +23,8 @@ Trabalho de conclusão do 5 módulo (Machine Learning 1) do Santander Coders 202
 
 
 ## Halvings
-2009-01-09
-2012-11-28
-2016-07-09
-2020-05-11
-2024-04-20
+* 2009-01-09
+* 2012-11-28
+* 2016-07-09
+* 2020-05-11
+* 2024-04-20

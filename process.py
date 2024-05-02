@@ -16,12 +16,7 @@ def merge(dataframes):
     if len(dataframes) == 1: return dataframes[0]
     else: return pd.merge(dataframes[0], merge(dataframes[1:]), how="outer")
 
-data = [
-    ('mvrv'),
-    ('200w', '200w-moving-avg-heatmap'),
-    ('market-cap'),
-    ('fees-usd-per-transaction'),
-]
+data = [('mvrv'), ('200w', '200w-moving-avg-heatmap'), ('market-cap'), ('fees-usd-per-transaction')]
 
 df = merge([f(d) for d in data])
 df["date"] = pd.to_datetime(df["date"], unit='ms').dt.strftime('%Y%m%d%H%M%S')
@@ -38,5 +33,14 @@ df_fng['date'] = pd.to_datetime(df_fng['date'], format='%d-%m-%Y').dt.strftime('
 df = pd.merge(df, df_fng, how="outer")
 
 df = df.sort_values(by="date")
+df["date"] = pd.to_datetime(df["date"], format='%Y%m%d%H%M%S')
+df.set_index("date", inplace=True)
+df = df.resample('4D').mean()
+df.reset_index(inplace=True)
+
+
+
+
+# print(df_resampled)
 print(df)
 df.to_csv('data/dataset.csv', index=False)
