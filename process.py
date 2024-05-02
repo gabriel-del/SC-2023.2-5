@@ -33,6 +33,7 @@ df_fng['date'] = pd.to_datetime(df_fng['date'], format='%d-%m-%Y')
 df = pd.merge(df, df_fng, how="outer")
 
 df = df.sort_values(by="date")
+df = df[df['date'] >= '2010-08-24']
 df.set_index("date", inplace=True)
 df = df.resample('4D').mean()
 df.reset_index(inplace=True)
